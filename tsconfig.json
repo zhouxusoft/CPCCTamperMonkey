@@ -4,9 +4,12 @@
         "module": "ESNext",
         "target": "ESNext",
         "moduleResolution": "Bundler",
-        "outDir": "js"
+        "outDir": "js",
+        "typeRoots": [
+            "./typings"
+        ]
     },
     "include": [
         "src"
-    ]
+    ],
 }

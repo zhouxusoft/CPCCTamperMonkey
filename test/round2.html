@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Progress Bar</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e0f7f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .progress-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .progress-ring {
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-ring-circle-bg {
+            fill: transparent;
+            stroke: #e0e0e0;
+            stroke-width: 10;
+        }
+
+        .progress-ring-circle {
+            fill: transparent;
+            stroke: #00c9a7;
+            stroke-width: 10;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-text .percentage {
+            font-size: 40px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .progress-text .status {
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-text .status::before {
+            content: '✔';
+            color: #00c9a7;
+            font-size: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <svg class="progress-ring" width="200" height="200">
+            <!-- 背景圆环 -->
+            <circle class="progress-ring-circle-bg" cx="100" cy="100" r="85"></circle>
+            <!-- 前景进度条 -->
+            <circle class="progress-ring-circle" cx="100" cy="100" r="85"
+                    stroke-dasharray="534" stroke-dashoffset="106"></circle>
+        </svg>
+        <!-- 文字部分 -->
+        <div class="progress-text">
+            <div class="percentage">80%</div>
+            <div class="status">已修课程</div>
+        </div>
+    </div>
+
+    <script>
+        const radius = 85;
+        const circumference = 2 * Math.PI * radius;
+        const progress = 80; // 进度百分比
+
+        const progressCircle = document.querySelector('.progress-ring-circle');
+        const offset = circumference - (progress / 100) * circumference;
+
+        progressCircle.style.strokeDasharray = `${circumference}`;
+        progressCircle.style.strokeDashoffset = offset;
+    </script>
+
+</body>
+</html>

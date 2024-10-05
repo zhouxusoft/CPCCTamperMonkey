@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Circular Progress Bar</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e0f7f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .progress-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-text .percentage {
+            font-size: 40px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .progress-text .status {
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-text .status::before {
+            content: '✔';
+            color: #00c9a7;
+            font-size: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <canvas id="progressCanvas" width="200" height="200"></canvas>
+        <!-- 文字部分 -->
+        <div class="progress-text">
+            <div class="percentage" id="percentage">80%</div>
+            <div class="status">已修课程</div>
+        </div>
+    </div>
+
+    <script>
+        function drawProgress(progress) {
+            const canvas = document.getElementById('progressCanvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 85;
+            const lineWidth = 10;
+
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 背景圆环
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+
+            // 进度条
+            ctx.beginPath();
+            const startAngle = -Math.PI / 2; // 从顶部开始
+            const endAngle = startAngle + (2 * Math.PI * (progress / 100)); // 计算进度的角度
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.strokeStyle = '#00c9a7';
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round'; // 圆角
+            ctx.stroke();
+        }
+
+        // 初始化，绘制80%进度条
+        drawProgress(80);
+    </script>
+
+</body>
+</html>

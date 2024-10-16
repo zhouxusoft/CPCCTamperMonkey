@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,17 +11,27 @@
             padding: 20px;
         }
     </style>
+    <script src="./tinymce/tinymce.min.js"></script>
 </head>
+
 <body>
     <button class="btn">防抖按钮</button>
     <span>aaaa</span>
     <span>bbbb</span>
+    <div contenteditable="true">可编辑</div>
+    <div id="tinydemo"></div>
 
     <script>
+        tinymce.init({
+            selector: '#tinydemo',
+            language: 'zh_CN',
+        })
+
+
         const btn = document.querySelector('.btn')
         let timer = null
         function fangDou() {
-            
+
             clearTimeout(timer)
             timer = setTimeout(() => {
                 console.log('防抖')
@@ -29,7 +40,7 @@
 
         function fang(fun, time) {
             let timer = null
-            return function() {
+            return function () {
                 clearTimeout(timer)
                 timer = setTimeout(() => {
                     fun()
@@ -69,7 +80,7 @@
             let aa = await a
             console.log(aa)
             let bb = await b()
-            console.log(bb)    
+            console.log(bb)
         }
 
         c()
@@ -84,7 +95,7 @@
             var fff = 1
             let ggg = 2
         }
-        
+
         // console.log(fff)
         // console.log(ggg)
 
@@ -95,19 +106,20 @@
         // console.log(ddaa)
 
         let ddaa = 22
-        
+
         console.log(null == 0)
-        
+
         function biBao() {
             let a = 0
-            return function() {
+            return function () {
                 a++
                 return a
             }
         }
 
         console.log(biBao())
-        
+
     </script>
 </body>
+
 </html>

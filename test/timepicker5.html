@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>时间选择器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      user-select: none;
+    }
+
+    .time-picker {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin: 20px;
+      cursor: pointer;
+    }
+
+    .time-slot {
+      width: 60px;
+      /* 每个时间格的宽度 */
+      height: 50px;
+      /* 每个时间格的高度 */
+      margin: 5px;
+      text-align: center;
+      line-height: 50px;
+      /* 垂直居中 */
+      background-color: white;
+      /* 初始背景颜色为白色 */
+      border: 1px solid #ccc;
+      transition: background-color 0.1s;
+    }
+
+    .selected {
+      background-color: blue;
+      /* 选中状态为蓝色 */
+      color: white;
+      /* 选中文字颜色为白色 */
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="time-picker" id="timePicker">
+    <!-- 生成时间格 -->
+  </div>
+
+  <script>
+    const timePicker = document.getElementById('timePicker');
+    const startHour = 9;
+    const endHour = 18;
+
+    // 生成时间段
+    for (let hour = startHour; hour <= endHour; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        if (hour === endHour && minute > 0) {
+          break; // 结束时间为 16:00，停止生成
+        }
+        const time = `${hour}:${minute === 0 ? '00' : '30'}`;
+        const slotDiv = document.createElement('div');
+        slotDiv.className = 'time-slot';
+        slotDiv.textContent = time;
+        slotDiv.dataset.time = time;
+        timePicker.appendChild(slotDiv);
+      }
+    }
+
+    let isMouseDown = false;
+    let startSlot = null; // 用来保存拖动开始的时间格
+
+    const toggleSlot = (slot) => {
+      slot.classList.toggle('selected');
+    };
+
+    timePicker.addEventListener('mousedown', (event) => {
+      if (event.target.classList.contains('time-slot')) {
+        isMouseDown = true;
+        startSlot = event.target; // 记录开始的时间槽
+        toggleSlot(event.target);
+      }
+    });
+
+    timePicker.addEventListener('mouseover', (event) => {
+      if (isMouseDown && event.target.classList.contains('time-slot')) {
+        toggleSlot(event.target);
+      }
+    });
+
+    timePicker.addEventListener('mouseup', (event) => {
+      isMouseDown = false; // 结束拖动选择
+      // 如果开始和结束的时间槽相同，则恢复状态
+      if (startSlot && startSlot === event.target) {
+        toggleSlot(event.target); // 恢复状态
+      }
+      startSlot = null; // 清空开始槽
+    });
+
+    document.addEventListener('mouseup', () => {
+      isMouseDown = false; // 结束拖动选择
+      startSlot = null; // 清空开始槽
+    });
+
+    timePicker.addEventListener('click', (event) => {
+      if (event.target.classList.contains('time-slot')) {
+        toggleSlot(event.target);
+      }
+    });
+  </script>
+
+</body>
+
+</html>

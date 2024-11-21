@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间选择器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .time-slider {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+            height: 50px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+
+        .time-slot {
+            flex: 1;
+            text-align: center;
+            line-height: 50px; /* Center text vertically */
+            border-right: 1px solid #ccc;
+            cursor: pointer;
+            position: relative;
+            user-select: none; /* Prevent text selection */
+        }
+
+        .time-slot:last-child {
+            border-right: none; /* Remove border for the last slot */
+        }
+
+        .selected {
+            background-color: blue;
+            color: white;
+            z-index: 1; /* Bring selected slot above others */
+        }
+    </style>
+</head>
+<body>
+
+<h1>时间选择器</h1>
+<div class="time-slider" id="timeSlider"></div>
+
+<script>
+    const timeSlider = document.getElementById('timeSlider');
+    const startHour = 9;
+    const endHour = 16;
+    const interval = 30; // 30 minutes
+    let isDragging = false;
+    let isSelecting = false;
+    let startSlotIndex = null;
+
+    // 生成时间段
+    for (let hour = startHour; hour < endHour; hour++) {
+        for (let minutes = 0; minutes < 60; minutes += interval) {
+            const timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            const time = `${hour}:${minutes === 0 ? '00' : minutes}`;
+            timeSlot.textContent = time;
+            timeSlot.dataset.index = `${hour * 2 + (minutes / interval)}`; // Store index for selection
+
+            // 添加事件监听
+            timeSlot.addEventListener('mousedown', function() {
+                isSelecting = true;
+                startSlotIndex = parseInt(this.dataset.index);
+                selectTimeSlots(startSlotIndex, startSlotIndex); // 选择当前时间段
+            });
+
+            timeSlot.addEventListener('mouseover', function() {
+                if (isSelecting) {
+                    const currentSlotIndex = parseInt(this.dataset.index);
+                    selectTimeSlots(startSlotIndex, currentSlotIndex); // 选择从开始到当前时间段
+                }
+            });
+
+            timeSlot.addEventListener('mouseup', function() {
+                if (isSelecting) {
+                    isDragging = false; // 结束拖动选择
+                }
+            });
+
+            timeSlot.addEventListener('click', function() {
+                if (!isDragging) {
+                    const currentSlotIndex = parseInt(this.dataset.index);
+                    if (isSelecting) {
+                        // 双选，选择结束时间
+                        selectTimeSlots(startSlotIndex, currentSlotIndex); // 选中从开始到结束的时间段
+                        isSelecting = false; // 结束选择
+                    } else {
+                        // 开始新的选择
+                        isSelecting = true; 
+                        startSlotIndex = currentSlotIndex; 
+                        selectTimeSlots(startSlotIndex, startSlotIndex); // 选择当前时间段
+                    }
+                }
+            });
+
+            timeSlider.appendChild(timeSlot);
+        }
+    }
+
+    // 选择时间段
+    function selectTimeSlots(start, end) {
+        // 清除之前的选择
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.classList.remove('selected');
+        });
+
+        // 确定选择范围
+        const minIdx = Math.min(start, end);
+        const maxIdx = Math.max(start, end);
+
+        // 标记选中的时间段
+        for (let i = minIdx; i <= maxIdx; i++) {
+            const slot = document.querySelector(`.time-slot[data-index="${i}"]`);
+            if (slot) {
+                slot.classList.add('selected');
+            }
+        }
+    }
+
+    // 处理鼠标松开事件
+    document.addEventListener('mouseup', function() {
+        isSelecting = false; // 停止选择
+        isDragging = false; // 停止拖动
+    });
+
+    // 处理鼠标离开窗口事件
+    document.addEventListener('mouseleave', function() {
+        isSelecting = false; // 停止选择
+        isDragging = false; // 停止拖动
+    });
+
+</script>
+
+</body>
+</html>

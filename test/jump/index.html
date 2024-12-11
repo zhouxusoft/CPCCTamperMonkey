@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    let token = 'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjM2OTYyYmUwLWM3NDItNGFjYy1iODdjLTcxOWIzMDU3N2QwNiJ9.1G7uUwmXaNSHsE059Yvx08XYLzCsJ1WeU-yTPEwoRuWQWTaFpIa0-_24wJXHretlNdx2OX1G5vnnatD9tZF_pQ'
+    function redirectToBaidu() {
+      window.location.href = 'http://10.119.170.48:81/book-admin/login?token=' + token;
+    }
+  </script>
+</head>
+
+<body>
+  <button onclick="redirectToBaidu()">
+    跳转到后台
+  </button>
+</body>
+
+</html>

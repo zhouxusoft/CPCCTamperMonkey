@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        #preview {
+            margin-top: 1rem;
+        }
+        .hidden {
+            display: none;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>文件上传测试</h1>
+    
+    <div class="upload-box">
+        <input type="file" id="fileInput">
+        <p>拖放文件到此区域或点击选择文件</p>
+        <button onclick="uploadFile()">上传文件</button>
+    </div>
+
+    <div id="result" class="hidden"></div>
+    
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const resultDiv = document.getElementById('result');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('请先选择文件');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                resultDiv.innerHTML = '上传中...';
+                resultDiv.className = '';
+
+                const response = await fetch('http://127.0.0.1:5000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <p>✅ 上传成功！</p>
+                        <p>下载链接：<a href="${data.download_url}" target="_blank">${data.download_url}</a></p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `❌ 错误：${data.error || '未知错误'}`;
+                }
+                
+                resultDiv.className = '';
+
+            } catch (error) {
+                console.error('上传失败:', error);
+                resultDiv.innerHTML = '❌ 上传失败，请检查控制台';
+                resultDiv.className = '';
+            }
+        }
+
+        // 拖放文件支持
+        const dropZone = document.querySelector('.upload-box');
+        
+        dropZone.ondragover = (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '#f0f8ff';
+        };
+
+        dropZone.ondragleave = () => {
+            dropZone.style.backgroundColor = '';
+        };
+
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '';
+            fileInput.files = e.dataTransfer.files;
+        };
+    </script>
+</body>
+</html>
